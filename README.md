@@ -27,4 +27,5 @@ Just pass a file to `dfi`. Example:
 ```sh
 dfi image.png
 dfi document.pdf
+dfi movie.mp4
 ```
