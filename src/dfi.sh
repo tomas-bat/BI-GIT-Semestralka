@@ -19,6 +19,7 @@ then
   out=`exiftool $1`
   if [ $? -eq 0 ]
   then
+    echo "exif:"
     echo "$out"
   fi
 fi
@@ -37,5 +38,16 @@ then
   then
     echo "Histogram:"
     echo "$out"
+  fi
+fi
+
+if [[ $filetype =~ "ISO Media" ]]
+then
+  if command -v ffprobe &> /dev/null
+  then
+    echo "ffprobe:"
+    ffprobe -hide_banner $1
+  else
+    echo "For more information, install ffprobe"
   fi
 fi
