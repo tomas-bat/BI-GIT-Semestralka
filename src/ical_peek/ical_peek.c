@@ -37,18 +37,24 @@ int main(int argc, char **argv) {
     }
 
 
-    char event_summary[300];
+    char event_summary[300],
+            event_start[30];
 
     while (getline(&line, &len, fp) != -1) {
         if (starts_with(line, "BEGIN:VEVENT")) {
             event_summary[0] = '\0';
+            event_start[0] = '\0';
         }
         if (starts_with(line, "SUMMARY")) {
             strlcpy(event_summary, strchr(line, ':') + 1, 300);
             *strchr(event_summary,'\r') = '\0';
         }
+        if (starts_with(line, "DTSTART")) {
+            strlcpy(event_start, strchr(line, ':') + 1, 30);
+            *strchr(event_start,'\r') = '\0';
+        }
         if (starts_with(line, "END:VEVENT")) {
-            printf("%s\n", event_summary);
+            printf("%s: %s\n", event_start, event_summary);
         }
     }
 
