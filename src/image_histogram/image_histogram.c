@@ -4,6 +4,8 @@
 
 #include "stb_image.h"
 
+#define HIST_HEIGHT 10
+
 void count_hist(const unsigned char *img, int width, int height, int *hist) {
     for (int i = 0; i < width * height; i++) {
         hist[img[i]]++;
@@ -30,14 +32,14 @@ void normalise_bins(float *bins) {
     }
 
     for (int i = 0; i < 64; i++) {
-        bins[i] = bins[i] / max * 10;
+        bins[i] = bins[i] / max * HIST_HEIGHT;
     }
 }
 
 void print_hist(const float *bins) {
     char *boxes[16] = {" ", "▁", "▁", "▂", "▂", "▃", "▃", "▄", "▄", "▅", "▅", "▆", "▆", "▇", "▇", "█"};
 
-    for (int y = 10; y > 0; y--) {
+    for (int y = HIST_HEIGHT; y > 0; y--) {
         for (int x = 0; x < 64; x++) {
             int index = (int) floorf((bins[x] - (float) y + 1) * 16);
             if (index < 0)
