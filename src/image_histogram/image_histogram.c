@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -6,41 +8,55 @@
 
 #define HIST_HEIGHT 10
 
+int get_hist_width() {
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    int hist_width = w.ws_col;
+    if (hist_width == 0 || hist_width > 400)
+        return 64;
+
+    hist_width = 256;
+    while (hist_width > w.ws_col)
+        hist_width /= 2;
+    return hist_width;
+}
+
 void count_hist(const unsigned char *img, int width, int height, int *hist) {
     for (int i = 0; i < width * height; i++) {
         hist[img[i]]++;
     }
 }
 
-float *count_bins(const int *hist) {
-    float *bins = calloc(64, sizeof(float));
+float *count_bins(const int *hist, int bin_count) {
+    float *bins = calloc(bin_count, sizeof(float));
 
-    for (int i = 0; i < 256; i += 4) {
-        for (int j = i; j < i + 4; j++) {
-            bins[i / 4] += (float) hist[j];
+    int acc_per_bin = 256 / bin_count;
+    for (int i = 0; i < 256; i += acc_per_bin) {
+        for (int j = i; j < i + acc_per_bin; j++) {
+            bins[i / acc_per_bin] += (float) hist[j];
         }
     }
 
     return bins;
 }
 
-void normalise_bins(float *bins) {
+void normalise_bins(float *bins, int bin_count) {
     float max = 0;
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < bin_count; i++) {
         if (bins[i] > max)
             max = bins[i];
     }
 
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < bin_count; i++) {
         bins[i] = bins[i] / max * HIST_HEIGHT;
     }
 }
 
-void print_hist(const float *bins) {
+void print_hist(const float *bins, int width) {
     char *boxes[16] = {" ", "▁", "▁", "▂", "▂", "▃", "▃", "▄", "▄", "▅", "▅", "▆", "▆", "▇", "▇", "█"};
 
     for (int y = HIST_HEIGHT; y > 0; y--) {
-        for (int x = 0; x < 64; x++) {
+        for (int x = 0; x < width; x++) {
             int index = (int) floorf((bins[x] - (float) y + 1) * 16);
             if (index < 0)
                 index = 0;
@@ -68,11 +84,12 @@ int main(int argc, char **argv) {
     int hist[256] = {0};
     count_hist(img, width, height, hist);
 
-    float *bins = count_bins(hist);
+    int bin_count = get_hist_width();
+    float *bins = count_bins(hist, bin_count);
 
-    normalise_bins(bins);
+    normalise_bins(bins, bin_count);
 
-    print_hist(bins);
+    print_hist(bins, bin_count);
 
     free(bins);
 
