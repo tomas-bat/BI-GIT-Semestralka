@@ -11,6 +11,7 @@ Note, that the amount of information may depend on other installed software. The
 ## Prerequisites:
 - POSIX-compatible OS
 - sane shell, `bash` or `zsh` preferred
+- C compiler
 
 
 ## Run makefile:
