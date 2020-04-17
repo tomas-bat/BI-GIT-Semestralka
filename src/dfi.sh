@@ -22,3 +22,20 @@ then
     echo "$out"
   fi
 fi
+
+if [[ $filetype =~ "image" ]]
+then
+  if command -v image_histogram &>/dev/null
+  then
+    executable="image_histogram"
+  else
+    executable="$(dirname $0)/image_histogram"
+  fi
+
+  out=`$executable $1`
+  if [ $? -eq 0 ]
+  then
+    echo "Histogram:"
+    echo "$out"
+  fi
+fi
