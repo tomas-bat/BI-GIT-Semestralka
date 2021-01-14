@@ -99,9 +99,8 @@ Postup:
 
 - opět jsem si našel commit `c6926e1`, kde byl přidán soubor `a.out` a všiml si, že od té doby již nebyl nikdy upravován
 - znovu jsem tedy použil rebase na tento commit, abych soubor smazal
-- zadání nijak blíže nespecifikovalo, jaké soubory chceme ignorovat, do `.gitignore` jsem tedy pouze napsal soubor `a.out`,
-žádné jiné soubory, které by neměly být verzovány, jsem v repozitáři nenašel
-- git bude tedy od teď ignorovat všechny soubory názvu `a.out`
+- do `.gitignore` jsem přidal `a.out`, aby už soubory s tímto názvem ignoroval, a složku `bin/`, aby git ignoroval zkompilované
+binárky příkazem `make`
 
 Použité příkazy:
 ```sh
@@ -117,6 +116,7 @@ git push origin clean
 Návrh `.gitignore`:
 ```
 a.out
+bin/
 ```
 
 ## 5. Oprava autora
