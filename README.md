@@ -3,21 +3,6 @@
 Jméno: Tomáš Batěk
 E-mail: batekto2@fit.cvut.cz
 
-## 0. Inicializace (vzor)
-Postup:
-- Naklonuji vzdálený repozitář pro odevzdání,
-- přidám vzdálené repozitáře s obsahem.
-
-Použité příkazy:
-```sh
-git clone fit@gitc.cz:ZS2020/repo/novakjos_sem.git
-for name in alice bob charlie
-do
-  git remote add $name https://gitlab.fit.cvut.cz/BI-GIT/semestral/$name.git
-  git fetch $name
-done
-```
-
 ## 1. Spojení repozitářů
 Postup:
 
